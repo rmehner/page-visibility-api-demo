@@ -1,0 +1,90 @@
+body {
+  width: 500px;
+  font-family: Helvetica, Verdana;
+  margin: 0 auto;
+}
+
+#wait_time {
+  font-weight: bold;
+}
+
+.clippy {
+  padding-top: 30px;
+  display: block;
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none;
+}
+
+footer {
+  font-size: 0.8em;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.bubble {
+  font-family: Tahoma, Arial;
+  display: block;
+  background-color: #FFFFC9;
+  position: relative;
+  padding: 10px;
+  border: #000000 solid 1px;
+  border-radius: 10px;
+  margin-top: 50px;
+ }
+
+.bubble:after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  border-style: solid;
+  border-width: 20px 20px 0 0;
+  border-color: #FFFFC9 transparent;
+  display: block;
+  width: 0;
+  z-index: 1;
+}
+
+.bubble:before {
+  content: "";
+  position: absolute;
+  bottom: -21px;
+  left: 50%;
+  border-style: solid;
+  border-width: 20px 20px 0 0;
+  border-color: #000000 transparent;
+  display: block;
+  width: 0;
+  z-index: 0;
+  box-shadow: -1px 0 0 #000;
+}
+
+.bubble ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.bubble ul li {
+  padding: 0;
+  padding-left: 1.5em;
+}
+
+.bubble ul li:before {
+  position: relative;
+  display: block;
+  height: 10px;
+  width: 10px;
+  left: -1.5em;
+  top: .9em;
+  background: #092a5d;
+  background: -webkit-radial-gradient(60% 60%, circle, #0D3056 0%,#4effe8 0%,#1186cb 30%,#0D3056 100%);
+  background: -moz-radial-gradient(60% 60%, circle, #0D3056 0%,#4effe8 0%,#1186cb 30%,#0D3056 100%);
+  background: -o-radial-gradient(60% 60%, circle, #0D3056 0%,#4effe8 0%,#1186cb 30%,#0D3056 100%);
+  background: -ms-radial-gradient(60% 60%, circle, #0D3056 0%,#4effe8 0%,#1186cb 30%,#0D3056 100%);
+  background: radial-gradient(60% 60%, circle, #0D3056 0%,#4effe8 0%,#1186cb 30%,#0D3056 100%);
+  border-radius: 50%;
+  content: "";
+}

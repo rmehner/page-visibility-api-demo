@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Using the PageVisibility API</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Using the PageVisibility API</h1>
+    <p>
+      With all the HTML5 JavaScript poster childs like requestAnimationFrame, canvas,
+      FileReader and many more, the PageVisibility API is an often overlooked but
+      pretty useful addition to your tool belt.
+    </p>
+    <p>
+      Read <a href="coding-robin.de/2013/03/13/using-the-page-visibility-api.html">our blog post</a>
+      on that topic to learn more about it.
+    </p>
+    <div class="bubble">
+      <div id="welcome_back_message" class="hidden">
+        <p>
+          It looks like you have been away for <span id="wait_time"></span> seconds.
+        </p>
+
+        <p>
+          Did you know that:
+          <ul id="fact_list"></ul>
+        </p>
+      </div>
+
+      <div id="nay_no_browser_support" class="hidden">
+        <p>
+          It looks like your browser <strong>does not</strong> support the PageVisibility API.
+        </p>
+        <p>
+          Do you want to:
+          <ul>
+            <li>Read <a href="http://coding-robin.de/2013/03/13/using-the-page-visibility-api.html">the blog post</a> to learn about existing polyfills and browser support?</li>
+            <li>Know <a href="http://caniuse.com/#feat=pagevisibility">which browsers support the API?</a></li>
+          </ul>
+        </p>
+      </div>
+
+      <div id="yay_browser_supports_the_api" class="hidden">
+        <p>
+          It looks like your browser supports the PageVisibility API.
+        </p>
+
+        <p>
+          Now <strong>leave the tab</strong> and come back to see it in action.
+        </p>
+      </div>
+    </div>
+
+    <img class="clippy" src="clippy.png" title="Oh hey, it's Clippy. Did you miss him?">
+    <footer>
+      Demo by <a href="http://coding-robin.de">Coding Robin</a>, <a href="https://github.com/rmehner/page-visibility-demo">Code on GitHub</a>, Clippy is courtesy of <a href="http://microsoft.com">Microsoft</a>.
+    </footer>
+    <!-- this will populate a window.facts array -->
+    <script src="facts.js"></script>
+    <script>
+      // simple utilitly functions
+      var show = function(id) {
+        document.getElementById(id).style.display = 'block';
+      };
+
+      var hide = function(id) {
+        document.getElementById(id).style.display = 'none';
+      }
+
+      // check for browser support and display message accordingly
+      var checkForBrowserSupport = function() {
+        var hiddenProperties = ['hidden', 'webkitHidden', 'mozHidden', 'msHidden'];
+        var hiddenProperty;
+
+        for (var i = 0; i < hiddenProperties.length; i++) {
+          hiddenProperty = hiddenProperties[i];
+          if (typeof document[hiddenProperty] !== 'undefined') {
+            show('yay_browser_supports_the_api');
+            return;
+          }
+        }
+
+        show('nay_no_browser_support');
+      };
+
+      checkForBrowserSupport();
+
+      // actual code for the Page Visibility thing, READ HERE!
+      var gotSomeSleepAt;
+
+      var getRandomFacts = function() {
+        var randomFacts = [];
+        for(var i = 0; i < 2; i++) {
+          randomFacts.push(facts[Math.floor(Math.random() * facts.length)])
+        }
+
+        return randomFacts;
+      };
+
+      var goToSleep = function(event) {
+        hide('welcome_back_message');
+        hide('yay_browser_supports_the_api');
+        gotSomeSleepAt = event.timeStamp;
+      };
+
+      var wakeUp = function(event) {
+        document.getElementById('wait_time').textContent = (event.timeStamp - gotSomeSleepAt) / 1000;
+        document.getElementById('fact_list').innerHTML = getRandomFacts().map(function(fact) {
+          return '<li>' + fact + '</li>';
+        }).join("\n");
+
+        show('welcome_back_message');
+      };
+
+      var onVisibilityChange = function(onVisible, onInvisible) {
+        var bindVisibilityChange = function(eventName, propertyName) {
+          document.addEventListener(eventName, function(event) {
+            document[propertyName] ? onInvisible(event) : onVisible(event);
+          });
+        };
+
+        if (typeof document.hidden !== 'undefined') {
+          return bindVisibilityChange('visibilitychange', 'hidden');
+        } else if (typeof document.webkitHidden !== 'undefined') {
+          return bindVisibilityChange('webkitvisibilitychange', 'webkitHidden');
+        } else if (typeof document.mozHidden !== 'undefined') {
+          return bindVisibilityChange('mozvisibilitychange', 'mozHidden');
+        } else if (typeof document.msHidden !== 'undefined') {
+          return bindVisibilityChange('msvisibilitychange', 'msHidden');
+        }
+      };
+
+      onVisibilityChange(wakeUp, goToSleep);
+    </script>
+  </body>
+</html>
