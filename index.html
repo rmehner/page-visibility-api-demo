@@ -101,17 +101,17 @@
           return randomFacts;
         };
 
-        var goToSleep = function(event) {
+        var goToSleep = function() {
           hide('welcome_back_message');
           hide('yay_browser_supports_the_api');
 
-          gotSomeSleepAt = event.timeStamp;
+          gotSomeSleepAt = Date.now();
         };
 
-        var wakeUp = function(event) {
+        var wakeUp = function() {
           hide('yay_browser_supports_the_api');
 
-          document.getElementById('wait_time').textContent = (event.timeStamp - gotSomeSleepAt) / 1000;
+          document.getElementById('wait_time').textContent = (Date.now() - gotSomeSleepAt) / 1000;
           document.getElementById('fact_list').innerHTML = getRandomFacts().map(function(fact) {
             return '<li>' + fact + '</li>';
           }).join("\n");
