@@ -59,92 +59,96 @@
     <!-- this will populate a window.facts array -->
     <script src="facts.js"></script>
     <script>
-      // simple utilitly functions
-      var show = function(id) {
-        document.getElementById(id).style.display = 'block';
-      };
+      (function() {
+        "use strict";
 
-      var hide = function(id) {
-        document.getElementById(id).style.display = 'none';
-      }
-
-      // check for browser support and display message accordingly
-      var checkForBrowserSupport = function() {
-        var hiddenProperties = ['hidden', 'webkitHidden', 'mozHidden', 'msHidden'];
-        var hiddenProperty;
-
-        for (var i = 0; i < hiddenProperties.length; i++) {
-          hiddenProperty = hiddenProperties[i];
-          if (typeof document[hiddenProperty] !== 'undefined') {
-            show('yay_browser_supports_the_api');
-            return;
-          }
-        }
-
-        show('nay_no_browser_support');
-      };
-
-      checkForBrowserSupport();
-
-      // actual code for the Page Visibility thing, READ HERE!
-      var gotSomeSleepAt;
-
-      var getRandomFacts = function() {
-        var randomFacts = [];
-        for(var i = 0; i < 2; i++) {
-          randomFacts.push(facts[Math.floor(Math.random() * facts.length)]);
-        }
-
-        return randomFacts;
-      };
-
-      var goToSleep = function(event) {
-        hide('welcome_back_message');
-        hide('yay_browser_supports_the_api');
-
-        gotSomeSleepAt = event.timeStamp;
-      };
-
-      var wakeUp = function(event) {
-        hide('yay_browser_supports_the_api');
-
-        document.getElementById('wait_time').textContent = (event.timeStamp - gotSomeSleepAt) / 1000;
-        document.getElementById('fact_list').innerHTML = getRandomFacts().map(function(fact) {
-          return '<li>' + fact + '</li>';
-        }).join("\n");
-
-        show('welcome_back_message');
-      };
-
-      var onVisibilityChange = function(onVisible, onInvisible, onPrerender) {
-        var bindVisibilityChange = function(eventName, propertyName) {
-          document.addEventListener(eventName, function(event) {
-            switch (document[propertyName]) {
-              case 'visible':
-                if (typeof onVisible === 'function') onVisible(event);
-                break;
-              case 'hidden':
-                if (typeof onInvisible === 'function') onInvisible(event);
-                break;
-              case 'prerender':
-                if (typeof onPrerender === 'function') onPrerender(event);
-                break;
-            }
-          });
+        // simple utilitly functions
+        var show = function(id) {
+          document.getElementById(id).style.display = 'block';
         };
 
-        if (typeof document.visibilityState !== 'undefined') {
-          bindVisibilityChange('visibilitychange', 'visibilityState');
-        } else if (typeof document.webkitVisibilityState !== 'undefined') {
-          bindVisibilityChange('webkitvisibilitychange', 'webkitVisibilityState');
-        } else if (typeof document.mozVisibilityState !== 'undefined') {
-          bindVisibilityChange('mozvisibilitychange', 'mozVisibilityState');
-        } else if (typeof document.msVisibilityState !== 'undefined') {
-          bindVisibilityChange('msvisibilitychange', 'msVisibilityState');
-        }
-      };
+        var hide = function(id) {
+          document.getElementById(id).style.display = 'none';
+        };
 
-      onVisibilityChange(wakeUp, goToSleep);
+        // check for browser support and display message accordingly
+        var checkForBrowserSupport = function() {
+          var hiddenProperties = ['hidden', 'webkitHidden', 'mozHidden', 'msHidden'];
+          var hiddenProperty;
+
+          for (var i = 0; i < hiddenProperties.length; i++) {
+            hiddenProperty = hiddenProperties[i];
+            if (typeof document[hiddenProperty] !== 'undefined') {
+              show('yay_browser_supports_the_api');
+              return;
+            }
+          }
+
+          show('nay_no_browser_support');
+        };
+
+        checkForBrowserSupport();
+
+        // actual code for the Page Visibility thing, READ HERE!
+        var gotSomeSleepAt;
+
+        var getRandomFacts = function() {
+          var randomFacts = [];
+          for(var i = 0; i < 2; i++) {
+            randomFacts.push(facts[Math.floor(Math.random() * facts.length)]);
+          }
+
+          return randomFacts;
+        };
+
+        var goToSleep = function(event) {
+          hide('welcome_back_message');
+          hide('yay_browser_supports_the_api');
+
+          gotSomeSleepAt = event.timeStamp;
+        };
+
+        var wakeUp = function(event) {
+          hide('yay_browser_supports_the_api');
+
+          document.getElementById('wait_time').textContent = (event.timeStamp - gotSomeSleepAt) / 1000;
+          document.getElementById('fact_list').innerHTML = getRandomFacts().map(function(fact) {
+            return '<li>' + fact + '</li>';
+          }).join("\n");
+
+          show('welcome_back_message');
+        };
+
+        var onVisibilityChange = function(onVisible, onInvisible, onPrerender) {
+          var bindVisibilityChange = function(eventName, propertyName) {
+            document.addEventListener(eventName, function(event) {
+              switch (document[propertyName]) {
+                case 'visible':
+                  if (typeof onVisible === 'function') onVisible(event);
+                  break;
+                case 'hidden':
+                  if (typeof onInvisible === 'function') onInvisible(event);
+                  break;
+                case 'prerender':
+                  if (typeof onPrerender === 'function') onPrerender(event);
+                  break;
+              }
+            });
+          };
+
+          if (typeof document.visibilityState !== 'undefined') {
+            bindVisibilityChange('visibilitychange', 'visibilityState');
+          } else if (typeof document.webkitVisibilityState !== 'undefined') {
+            bindVisibilityChange('webkitvisibilitychange', 'webkitVisibilityState');
+          } else if (typeof document.mozVisibilityState !== 'undefined') {
+            bindVisibilityChange('mozvisibilitychange', 'mozVisibilityState');
+          } else if (typeof document.msVisibilityState !== 'undefined') {
+            bindVisibilityChange('msvisibilitychange', 'msVisibilityState');
+          }
+        };
+
+        onVisibilityChange(wakeUp, goToSleep);
+      })();
     </script>
   </body>
 </html>
