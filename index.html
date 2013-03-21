@@ -92,7 +92,7 @@
       var getRandomFacts = function() {
         var randomFacts = [];
         for(var i = 0; i < 2; i++) {
-          randomFacts.push(facts[Math.floor(Math.random() * facts.length)])
+          randomFacts.push(facts[Math.floor(Math.random() * facts.length)]);
         }
 
         return randomFacts;
@@ -101,10 +101,13 @@
       var goToSleep = function(event) {
         hide('welcome_back_message');
         hide('yay_browser_supports_the_api');
+
         gotSomeSleepAt = event.timeStamp;
       };
 
       var wakeUp = function(event) {
+        hide('yay_browser_supports_the_api');
+
         document.getElementById('wait_time').textContent = (event.timeStamp - gotSomeSleepAt) / 1000;
         document.getElementById('fact_list').innerHTML = getRandomFacts().map(function(fact) {
           return '<li>' + fact + '</li>';
@@ -113,21 +116,31 @@
         show('welcome_back_message');
       };
 
-      var onVisibilityChange = function(onVisible, onInvisible) {
+      var onVisibilityChange = function(onVisible, onInvisible, onPrerender) {
         var bindVisibilityChange = function(eventName, propertyName) {
           document.addEventListener(eventName, function(event) {
-            document[propertyName] ? onInvisible(event) : onVisible(event);
+            switch (document[propertyName]) {
+              case 'visible':
+                if (typeof onVisible === 'function') onVisible(event);
+                break;
+              case 'hidden':
+                if (typeof onInvisible === 'function') onInvisible(event);
+                break;
+              case 'prerender':
+                if (typeof onPrerender === 'function') onPrerender(event);
+                break;
+            }
           });
         };
 
-        if (typeof document.hidden !== 'undefined') {
-          return bindVisibilityChange('visibilitychange', 'hidden');
-        } else if (typeof document.webkitHidden !== 'undefined') {
-          return bindVisibilityChange('webkitvisibilitychange', 'webkitHidden');
-        } else if (typeof document.mozHidden !== 'undefined') {
-          return bindVisibilityChange('mozvisibilitychange', 'mozHidden');
-        } else if (typeof document.msHidden !== 'undefined') {
-          return bindVisibilityChange('msvisibilitychange', 'msHidden');
+        if (typeof document.visibilityState !== 'undefined') {
+          bindVisibilityChange('visibilitychange', 'visibilityState');
+        } else if (typeof document.webkitVisibilityState !== 'undefined') {
+          bindVisibilityChange('webkitvisibilitychange', 'webkitVisibilityState');
+        } else if (typeof document.mozVisibilityState !== 'undefined') {
+          bindVisibilityChange('mozvisibilitychange', 'mozVisibilityState');
+        } else if (typeof document.msVisibilityState !== 'undefined') {
+          bindVisibilityChange('msvisibilitychange', 'msVisibilityState');
         }
       };
 
