@@ -109,7 +109,8 @@
         };
 
         var wakeUp = function() {
-          hide('yay_browser_supports_the_api');
+          // we have not been asleep yet so we don't have to wake up
+          if (typeof gotSomeSleepAt === 'undefined') return;
 
           document.getElementById('wait_time').textContent = (Date.now() - gotSomeSleepAt) / 1000;
           document.getElementById('fact_list').innerHTML = getRandomFacts().map(function(fact) {
